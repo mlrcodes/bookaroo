@@ -6,12 +6,6 @@ pipeline {
     }
 
     stages {
-        stage('Checkout Code') {
-            steps {
-                git 'https://github.com/mlrcodes/bookaroo.git'
-            }
-        }
-
         stage('Run Tests') {
             steps {
                 sh 'bundle install'
