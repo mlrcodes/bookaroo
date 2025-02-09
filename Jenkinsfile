@@ -3,19 +3,20 @@ pipeline {
 
     environment {
         bookaroo_image = "mlrdevs/bookaroo"
-        GIT_SSH_KEY = credentials('github_key')         
     }
-
 
     stages {
         stage('Checkout from GitHub') {
             steps {
-                script {
-                    sh "ssh-agent bash -c 'ssh-add ${GIT_SSH_KEY}; git clone git@github.com:mlrcodes/bookaroo.git'"
+                withCredentials([sshUserPrivateKey(credentialsId: 'github_key', keyFileVariable: 'SSH_KEY')]) {
+                    sh '''
+                    eval $(ssh-agent -s)
+                    ssh-add $SSH_KEY
+                    git clone git@github.com:mlrcodes/bookaroo.git
+                    '''
                 }
             }
         }
-
 
         stage('Run Tests') {
             steps {
@@ -26,14 +27,14 @@ pipeline {
 
         stage('Build Docker Image') {
             steps {
-                sh 'docker build -t $bookaroo_image:latest .'
+                sh "docker build -t ${bookaroo_image}:latest ."
             }
         }
 
         stage('Push to Docker Hub') {
             steps {
-                withDockerRegistry([credentialsId: 'docker-hub-credentials', url: '']) {
-                    sh 'docker push $bookaroo_image:latest'
+                withDockerRegistry([credentialsId: 'docker-hub-credentials', url: 'https://index.docker.io/v1/']) {
+                    sh "docker push ${bookaroo_image}:latest"
                 }
             }
         }
@@ -42,11 +43,12 @@ pipeline {
             steps {
                 sshagent(['vps-ssh-key']) {
                     sh '''
+                    scp .env root@134.209.242.198:/root/.env || true
                     ssh root@134.209.242.198 <<EOF
-                    docker pull $bookaroo_image:latest
+                    docker pull ${bookaroo_image}:latest
                     docker stop rails-app || true
                     docker rm rails-app || true
-                    docker run -d --name rails-app -p 3000:3000 --env-file .env $bookaroo_image:latest
+                    docker run -d --name rails-app -p 3000:3000 --env-file /root/.env ${bookaroo_image}:latest
                     EOF
                     '''
                 }
