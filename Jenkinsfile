@@ -11,7 +11,7 @@ pipeline {
                 withCredentials([sshUserPrivateKey(credentialsId: 'github_key', keyFileVariable: 'SSH_KEY')]) {
                     sh '''
                     eval $(ssh-agent -s)
-                    ssh-add $SSH_KEY
+                    ssh-add $SSH_KEY || exit 1
                     git clone git@github.com:mlrcodes/bookaroo.git
                     '''
                 }
