@@ -2,8 +2,7 @@ pipeline {
     agent any
 
     environment {
-        bookaroo_image = "yourdockerhubusername/rails-app"
-        WEBHOOK_SECRET = credentials('github-webhook-secret')        
+        bookaroo_image = "mlrdevs/rails-app"
     }
 
     stages {
