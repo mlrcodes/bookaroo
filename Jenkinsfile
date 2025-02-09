@@ -8,7 +8,7 @@ pipeline {
     stages {
         stage('Checkout Code') {
             steps {
-                git 'https://github.com/mlrdevs/bookaroo.git'
+                git 'https://github.com/mlrcodes/bookaroo.git'
             }
         }
 
