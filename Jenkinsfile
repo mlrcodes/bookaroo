@@ -2,10 +2,21 @@ pipeline {
     agent any
 
     environment {
-        bookaroo_image = "mlrdevs/rails-app"
+        bookaroo_image = "mlrdevs/bookaroo"
+        GIT_SSH_KEY = credentials('github_key')         
     }
 
+
     stages {
+        stage('Checkout from GitHub') {
+            steps {
+                script {
+                    sh "ssh-agent bash -c 'ssh-add ${GIT_SSH_KEY}; git clone git@github.com:mlrcodes/bookaroo.git'"
+                }
+            }
+        }
+
+
         stage('Run Tests') {
             steps {
                 sh 'bundle install'
