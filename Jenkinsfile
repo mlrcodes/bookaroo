@@ -23,12 +23,21 @@ pipeline {
             }
         }
 
-        stage('Run Tests') {
+        stage('Install dependencies') {
             steps {
                 sh 'bundle install'
-                sh 'RAILS_ENV=test bundle exec rspec'
             }
         }
+        
+        stage('Run Tests') {
+            steps {
+                sh '''
+                    export RAILS_ENV=test
+                    bundle exec rspec
+                '''
+            }
+        }
+
 
         stage('Build Docker Image') {
             steps {
