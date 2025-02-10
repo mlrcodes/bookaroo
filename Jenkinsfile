@@ -53,28 +53,21 @@ pipeline {
             }
         }
 
-stage('Deploy') {
-    steps {
-        sshagent(['vps-ssh-key']) {
-            script {
-                sh '''
-                set -x  # Enable debugging to print commands
-                ssh -vvv root@134.209.242.198 <<EOF
-                set -x
-                docker pull ${bookaroo_image}:latest
-                docker ps -a  # List running and stopped containers for debugging
-                docker stop bookaroo || true
-                docker rm bookaroo || true
-                docker run -d --name bookaroo -p 3000:3000 ${bookaroo_image}:latest
-                docker logs bookaroo  # Print logs if it crashes
-                docker ps -a  # List containers again to check status
-                set +x
+        stage('Deploy') {
+            steps {
+                sshagent(['vps-ssh-key']) {
+                    script {
+                        sh '''
+                        ssh root@134.209.242.198 <<EOF
+                        docker pull ${bookaroo_image}:latest
+                        docker stop bookaroo || true
+                        docker rm bookaroo || true
+                        docker run -d --name bookaroo -p 3000:3000 -e SECRET_KEY_BASE=example-secret-key ${bookaroo_image}:latest
 EOF
-                '''
+                        '''
+                    }
+                }
             }
         }
-    }
-}
-
     }
 }
