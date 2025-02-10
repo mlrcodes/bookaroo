@@ -58,8 +58,10 @@ pipeline {
                 sshagent(['vps-ssh-key']) {
                     script {
                         sh '''
+                        set -x  # Enable shell debugging to print every command being executed
+
                         echo "Starting deploy process..."
-                        
+
                         # Copy .env file to the VPS
                         scp .env root@134.209.242.198:/root/.env
                         if [ $? -ne 0 ]; then
@@ -67,9 +69,11 @@ pipeline {
                             exit 1
                         fi
                         echo "Env file copied successfully"
-                        
+
                         # SSH into VPS to deploy
                         ssh root@134.209.242.198 <<EOF
+                        set -x  # Enable shell debugging inside the SSH session
+
                         echo "Pulling Docker image"
                         docker pull ${bookaroo_image}:latest
                         if [ $? -ne 0 ]; then
@@ -98,6 +102,6 @@ pipeline {
                     }
                 }
             }
-}
+        }
     }
 }
