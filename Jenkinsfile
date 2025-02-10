@@ -12,7 +12,12 @@ pipeline {
                     sh '''
                     eval $(ssh-agent -s)
                     ssh-add $SSH_KEY || exit 1
-                    git clone git@github.com:mlrcodes/bookaroo.git
+                    # Check if the directory already exists and is a git repo
+                    if [ -d "bookaroo/.git" ]; then
+                        cd bookaroo && git pull
+                    else
+                        git clone git@github.com:mlrcodes/bookaroo.git
+                    fi
                     '''
                 }
             }
