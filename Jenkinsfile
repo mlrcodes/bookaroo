@@ -61,9 +61,9 @@ pipeline {
                         scp .env root@134.209.242.198:/root/.env || true
                         ssh root@134.209.242.198 <<EOF
                         docker pull ${bookaroo_image}:latest
-                        docker stop rails-app || true
-                        docker rm rails-app || true
-                        docker run -d --name rails-app -p 3000:3000 --env-file /root/.env ${bookaroo_image}:latest
+                        docker stop bookaroo || true
+                        docker rm rbookaroo || true
+                        docker run -d --name bookaroo -p 3000:3000 --env-file /root/.env ${bookaroo_image}:latest
                         EOF
                         '''
                     }
