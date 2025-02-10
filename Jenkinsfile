@@ -69,7 +69,7 @@ stage('Deploy') {
                 docker logs bookaroo  # Print logs if it crashes
                 docker ps -a  # List containers again to check status
                 set +x
-                EOF
+EOF
                 '''
             }
         }
