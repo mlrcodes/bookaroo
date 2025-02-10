@@ -58,45 +58,11 @@ pipeline {
                 sshagent(['vps-ssh-key']) {
                     script {
                         sh '''
-                        set -x  # Enable shell debugging to print every command being executed
-
-                        echo "Starting deploy process..."
-
-                        # Copy .env file to the VPS
-                        scp .env root@134.209.242.198:/root/.env
-                        if [ $? -ne 0 ]; then
-                            echo "Failed to copy .env file"
-                            exit 1
-                        fi
-                        echo "Env file copied successfully"
-
-                        # SSH into VPS to deploy
                         ssh root@134.209.242.198 <<EOF
-                        set -x  # Enable shell debugging inside the SSH session
-
-                        echo "Pulling Docker image"
                         docker pull ${bookaroo_image}:latest
-                        if [ $? -ne 0 ]; then
-                            echo "Docker pull failed"
-                            exit 1
-                        fi
-                        echo "Docker image pulled successfully"
-
-                        echo "Checking for existing containers"
-                        docker ps -a
-                        echo "Stopping existing container"
                         docker stop bookaroo || true
-                        echo "Removing existing container"
                         docker rm bookaroo || true
-
-                        echo "Running new container"
-                        docker run -d --name bookaroo -p 3000:3000 --env-file /root/.env ${bookaroo_image}:latest
-                        if [ $? -ne 0 ]; then
-                            echo "Docker run failed"
-                            docker logs bookaroo  # Show logs if the container fails to start
-                            exit 1
-                        fi
-                        echo "Container started successfully"
+                        docker run -d --name bookaroo -p 3000:3000 ${bookaroo_image}:latest
                         EOF
                         '''
                     }
