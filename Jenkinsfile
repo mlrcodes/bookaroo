@@ -62,7 +62,7 @@ pipeline {
                         ssh root@134.209.242.198 <<EOF
                         docker pull ${bookaroo_image}:latest
                         docker stop bookaroo || true
-                        docker rm rbookaroo || true
+                        docker rm bookaroo || true
                         docker run -d --name bookaroo -p 3000:3000 --env-file /root/.env ${bookaroo_image}:latest
                         EOF
                         '''
