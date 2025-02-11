@@ -297,3 +297,13 @@ test:
         read:
           mode: :primary
         max_pool_size: 1
+
+production:
+  clients:
+    default:
+      uri: <%= ENV["MONGO_ATLAS_URL"] %>
+      options:
+        server_selection_timeout: 5
+        connect_timeout: 5
+  options:
+    raise_not_found_error: false
