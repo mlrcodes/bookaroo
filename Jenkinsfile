@@ -38,10 +38,12 @@ pipeline {
             }
         }
 
-
         stage('Build Docker Image') {
             steps {
-                sh "docker build -t ${bookaroo_image}:latest ."
+                sh '''
+                docker images | grep ${bookaroo_image} && docker rmi $(docker images ${bookaroo_image} -q) || true
+                docker build -t ${bookaroo_image}:latest .
+                '''
             }
         }
 
@@ -56,15 +58,27 @@ pipeline {
         stage('Deploy') {
             steps {
                 sshagent(['vps-ssh-key']) {
-                    script {
-                        sh '''
-                        ssh root@134.209.242.198 <<EOF
-                        docker pull ${bookaroo_image}:latest
-                        docker stop bookaroo || true
-                        docker rm bookaroo || true
-                        docker run -d --name bookaroo -p 3000:3000 -e SECRET_KEY_BASE=example-secret-key ${bookaroo_image}:latest
-EOF
-                        '''
+                    withCredentials([
+                        string(credentialsId: 'MONGO_ATLAS_URL', variable: 'MONGO_ATLAS_URL'),
+                        string(credentialsId: 'SECRET_KEY_BASE', variable: 'SECRET_KEY_BASE')
+                    ]) {
+                        script {
+                            sh '''
+                            ssh root@134.209.242.198 <<EOF
+                            docker pull ${bookaroo_image}:latest
+
+                            # Stop and remove the existing container if it exists
+                            docker stop bookaroo || true
+                            docker rm bookaroo || true
+
+                            # Run new container with environment variables
+                            docker run -d --name bookaroo -p 3000:3000 \
+                                -e SECRET_KEY_BASE=${SECRET_KEY_BASE} \
+                                -e MONGO_ATLAS_URL=${MONGO_ATLAS_URL} \
+                                ${bookaroo_image}:latest
+                            EOF
+                            '''
+                        }
                     }
                 }
             }
