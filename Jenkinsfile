@@ -33,7 +33,7 @@ pipeline {
             steps {
                 sh '''
                     export RAILS_ENV=test
-                    bundle exec rspec
+                    rails test
                 '''
             }
         }
