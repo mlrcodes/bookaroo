@@ -1,80 +1,101 @@
-require "test_helper"
+require 'test_helper'
 
 class UserTest < ActiveSupport::TestCase
   def setup
     Mongoid.purge! 
-    @email = "john@example.com"
-    @user = User.create!(name: "John Doe", email: @email, password: "Secure@Password#123")
+
+    @user = User.new(name: "John Doe", email: "john.doe@example.com", password: "asd@ASD123")
   end
-  
-  test "user_should_be_valid_with_valid_attributes" do
+
+  test "should be valid with valid attributes" do
     assert @user.valid?
   end
 
-  test "user_should_have_name" do
-    assert_respond_to @user, :name
-    assert_equal "John Doe", @user.name
-  end
-  
-  test "user_should_be_invalid_without_name" do
-    @user.name = nil
+  # Name validations
+  test "should be invalid without a name" do
+    @user.name = ""
     assert_not @user.valid?
     assert_includes @user.errors[:name], "can't be blank"
   end
 
-  test "user_should_have_email" do
-    assert_respond_to @user, :email
-    assert_equal "john@example.com", @user.email
+  test "should be invalid with a short name" do
+    @user.name = "A"
+    assert_not @user.valid?
+    assert_includes @user.errors[:name], "is too short (minimum is 2 characters)"
   end
 
-  test "user_should_be_invalid_without_email" do
-    @user.email = nil
+  test "should be invalid with a long name" do
+    @user.name = "A" * 101
+    assert_not @user.valid?
+    assert_includes @user.errors[:name], "is too long (maximum is 100 characters)"
+  end
+
+  test "should be invalid with incorrect name format" do
+    @user.name = "John123"
+    assert_not @user.valid?
+    assert_includes @user.errors[:name], "must be a valid name format"
+  end
+
+  # Email validations
+  test "should be invalid without an email" do
+    @user.email = ""
     assert_not @user.valid?
     assert_includes @user.errors[:email], "can't be blank"
   end
 
-  test "user_should_be_invalid_if_email_is_not_unique" do
-    user = User.new(name: "John Doe", email: "john@example.com", password: "asd#ASD09")
-    assert_not user.valid?, "User should not be valid with non unique email"
-  end  
+  test "should be invalid with incorrect email format" do
+    @user.email = "invalid_email"
+    assert_not @user.valid?
+    assert_includes @user.errors[:email], "must be a valid email format"
+  end
 
-  test "user_should_have_password" do
-    assert_respond_to @user, :password
-  end  
+  test "should be invalid with duplicate email" do
+    duplicate_user = @user.dup
+    @user.save
+    assert_not duplicate_user.valid?
+    assert_includes duplicate_user.errors[:email], "has already been taken"
+  end
 
-  test "user_should_be_invalid_without_password" do
-    @user.password = nil  
+  # Password validations
+  test "should be invalid without a password" do
+    @user.password = ""
     assert_not @user.valid?
     assert_includes @user.errors[:password], "can't be blank"
   end
 
-  test "user_should_be_invalid_with_short_password" do
-    @user.password = "a#A2"
-    assert_not @user.valid?, "User's password should be invalid if shorter than 8 characters"
+  test "should be invalid with a short password" do
+    @user.password = "A1!a"
+    assert_not @user.valid?
+    assert_includes @user.errors[:password], "is too short (minimum is 8 characters)"
   end
 
-  test "user_should_be_invalid_if_password_does_not_have_lower_case_letters" do
-    @user.password = "ASD#@$123"
-    assert_not @user.valid?, "User's password should be invalid without at least one number"
+  test "should be invalid with a long password" do
+    @user.password = "A1!" + "a" * 22
+    assert_not @user.valid?
+    assert_includes @user.errors[:password], "is too long (maximum is 24 characters)"
   end
 
-  test "user_should_be_invalid_if_password_does_not_have_upper_case_letters" do
-    @user.password = "asd#@$123"
-    assert_not @user.valid?, "User's password should be invalid without at least one number"
-  end  
-
-  test "user_should_be_invalid_if_password_does_not_have_numbers" do
-    @user.password = "asd#@$ASD"
-    assert_not @user.valid?, "User's password should be invalid without at least one number"
+  test "should be invalid without an uppercase letter in password" do
+    @user.password = "password1!"
+    assert_not @user.valid?
+    assert_includes @user.errors[:password], "must be a valid password format"
   end
 
-  test "user_should_be_invalid_if_password_does_not_have_special_characters" do
-    @user.password = "asdASD123"
-    assert_not @user.valid?, "User's password should be invalid without at least one special character"
-  end  
+  test "should be invalid without a lowercase letter in password" do
+    @user.password = "PASSWORD1!"
+    assert_not @user.valid?
+    assert_includes @user.errors[:password], "must be a valid password format"
+  end
 
-  test "user_should_be_valid_if_password_is_correct" do
-    @user.password = "asd@ASD09"
-    assert @user.valid?, "User should be valid with correct password"
+  test "should be invalid without a number in password" do
+    @user.password = "Password!"
+    assert_not @user.valid?
+    assert_includes @user.errors[:password], "must be a valid password format"
+  end
+
+  test "should be invalid without a special character in password" do
+    @user.password = "Password1"
+    assert_not @user.valid?
+    assert_includes @user.errors[:password], "must be a valid password format"
   end
 end
