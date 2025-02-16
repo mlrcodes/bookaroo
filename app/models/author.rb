@@ -8,7 +8,6 @@ class Author
   has_many :books, class_name: "Book", inverse_of: :author, dependent: :destroy  
 
   validates :name, :surname, :country, presence: true
-
   validates :name, uniqueness: { scope: :surname, case_sensitive: false, message: "has already been taken" }
 
   # Ensure uniqueness in MongoDB

@@ -21,7 +21,7 @@ class Book
     message: "must be between 1 and 10 in 0.5 increments"
   }, allow_nil: true
   validate :validate_multiple_of_half
-  validates :title, uniqueness: { scope: :author, case_sensitive: false, message: "has already been taken" }
+  validates :title, uniqueness: { scope: [:author, :language], case_sensitive: false, message: "has already been taken for this language" }
 
   # Factory method: Creates a book with an existing author
   def self.create_from_existing_author(title:, language:, status:, score:, image:, author:)
