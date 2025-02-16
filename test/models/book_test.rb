@@ -114,6 +114,16 @@ class BookTest < Minitest::Test
     end
   end
 
+  def test_book_default_status_is_pending
+    book = Book.new(
+      title: unique_title,
+      language: "English",
+      author: @author
+    )
+
+    assert_equal book.status, "pending"
+  end
+
   def test_book_is_invalid_with_wrong_score
     book = Book.new(
       title: unique_title,

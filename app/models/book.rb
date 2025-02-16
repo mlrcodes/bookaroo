@@ -4,7 +4,7 @@ class Book
   
   field :title, type: String
   field :language, type: String
-  field :status, type: String
+  field :status, type: String, default: "pending"
   field :score, type: Float
   field :image, type: String
 
