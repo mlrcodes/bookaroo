@@ -4,8 +4,8 @@ class Book
   
   field :title, type: String
   field :language, type: String
-  field :status, type: String
-  field :score, type: Float
+  field :status, type: String, default: "pending"
+  field :score, type: Float, default: 5
   field :image, type: String
 
   belongs_to :author, class_name: "Author", inverse_of: :books
@@ -13,15 +13,23 @@ class Book
   STATUSES = %w[pending reading completed abandoned].freeze
 
   validates :title, presence: true
-  validates :language, presence: true
-  validates :status, inclusion: { in: STATUSES }
+
+  validates :language, 
+    presence: true, 
+    length: { in: 2..50 },
+    format: { with: /\A[A-Za-zÀ-ÖØ-öø-ÿ\s-]+\z/, message: "must be a valid language format" }
+
+    validates :status, inclusion: { in: STATUSES }
+
   validates :score, numericality: {
     greater_than_or_equal_to: 1,
     less_than_or_equal_to: 10,
     message: "must be between 1 and 10 in 0.5 increments"
   }, allow_nil: true
+
   validate :validate_multiple_of_half
-  validates :title, uniqueness: { scope: :author, case_sensitive: false, message: "has already been taken" }
+
+  validates :title, uniqueness: { scope: [:author, :language], case_sensitive: false, message: "has already been taken for this language" }
 
   # Factory method: Creates a book with an existing author
   def self.create_from_existing_author(title:, language:, status:, score:, image:, author:)
