@@ -32,12 +32,24 @@ class BookTest < ActiveSupport::TestCase
   end
 
   test "should be invalid if language format is incorrect" do
-    invalid_languages = ["Eng1ish", "123", "A", "ThisLanguageIsWayTooLongAndInvalidSoTestWontPass"]
+    invalid_languages = ["Eng1ish", "123", "A#Ea"]
     invalid_languages.each do |invalid_language|
       @book.language = invalid_language
       assert_not @book.valid?, "#{invalid_language} should be invalid"
       assert_includes @book.errors[:language], "must be a valid language format"
     end
+  end
+
+  test "should be invalid if language format is too short" do
+    @book.language = "A"
+    assert_not @book.valid?, "Title should be an invalid if length is less thant 2 characters"
+    assert_includes @book.errors[:language], "is too short (minimum is 2 characters)"
+  end
+
+  test "should be invalid if language format is too long" do
+    @book.language = "ThisLanguageIsWayTooLongAndInvalidSoTestNoWayWillPass"
+    assert_not @book.valid?, "Title should be an invalid if length is more thant 40 characters"
+    assert_includes @book.errors[:language], "is too long (maximum is 50 characters)"
   end
 
   test "should be valid if language format is correct" do

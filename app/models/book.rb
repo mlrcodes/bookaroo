@@ -13,14 +13,22 @@ class Book
   STATUSES = %w[pending reading completed abandoned].freeze
 
   validates :title, presence: true
-  validates :language, presence: true, format: { with: /\A[A-Za-zÀ-ÖØ-öø-ÿ\s-]{2,40}\z/, message: "must be a valid language format" }
-  validates :status, inclusion: { in: STATUSES }
+
+  validates :language, 
+    presence: true, 
+    length: { in: 2..50 },
+    format: { with: /\A[A-Za-zÀ-ÖØ-öø-ÿ\s-]+\z/, message: "must be a valid language format" }
+
+    validates :status, inclusion: { in: STATUSES }
+
   validates :score, numericality: {
     greater_than_or_equal_to: 1,
     less_than_or_equal_to: 10,
     message: "must be between 1 and 10 in 0.5 increments"
   }, allow_nil: true
+
   validate :validate_multiple_of_half
+
   validates :title, uniqueness: { scope: [:author, :language], case_sensitive: false, message: "has already been taken for this language" }
 
   # Factory method: Creates a book with an existing author
