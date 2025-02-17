@@ -1,62 +1,115 @@
 require "test_helper"
 
-class AuthorTest < Minitest::Test
+class AuthorTest < ActiveSupport::TestCase
   def setup
     Mongoid.purge!
 
-    @author = Author.create!(
-      name: "J.R.R.",
-      surname: "Tolkien",
-      country: "United Kingdom"
+    @author = Author.new(
+      name: "Gabriel",
+      surname: "García Márquez",
+      country: "Colombia"
     )
-
-    @book1 = @author.books.create!(title: "The Hobbit", language: "English", status: "reading", score: 4.5, image: "https://example.com/hobbit.jpg", author_id: @author._id)
-    @book2 = @author.books.create!(title: "The Lord of the Rings", language: "English", status: "reading", score: 5.0, image: "https://example.com/lotr.jpg", author_id: @author._id)
   end
 
-  def test_author_has_name
-    assert_respond_to @author, :name
-    assert_equal "J.R.R.", @author.name
+  test "should be valid with valid attributes" do
+    assert @author.valid?
   end
 
-  def test_author_has_surname
-    assert_respond_to @author, :surname
-    assert_equal "Tolkien", @author.surname
+  test "should be invalid without a name" do
+    @author.name = ""
+    assert_not @author.valid?
+    assert_includes @author.errors[:name], "can't be blank"
   end
 
-  def test_author_has_country
-    assert_respond_to @author, :country
-    assert_equal "United Kingdom", @author.country
+  test "should be invalid if name format is incorrect" do
+    invalid_names = ["John123", "J@ne"]
+    invalid_names.each do |invalid_name|
+      @author.name = invalid_name
+      assert_not @author.valid?, "#{invalid_name} should be invalid"
+      assert_includes @author.errors[:name], "must be valid name format"
+    end
   end
 
-  def test_author_has_many_books
-    assert_respond_to @author, :books
-    assert_equal 2, @author.books.count
-    assert_includes @author.books.map(&:title), "The Hobbit"
-    assert_includes @author.books.map(&:title), "The Lord of the Rings"
+  test "should be invalid if name is too short" do
+    @author.name = "A"
+    assert_not @author.valid?, "Name should be invalid if length is less thant 2 characters"
+    assert_includes @author.errors[:name], "is too short (minimum is 2 characters)"
   end
 
-    def test_author_is_invalid_without_name
-    author = Author.new(surname: "Tolkien", country: "United Kingdom")
-    refute author.valid?, "Author should be invalid without a name"
-    assert_includes author.errors[:name], "can't be blank"
+  test "should be invalid if name is too long" do
+    @author.name = "ThisAuthorNameIsWayTooLongAndInvalidSoTestNoWayWillPass"
+    assert_not @author.valid?, "Name should be invalid if length is more thant 50 characters"
+    assert_includes @author.errors[:name], "is too long (maximum is 50 characters)"
   end
 
-  def test_author_is_invalid_without_surname
-    author = Author.new(name: "J.R.R.", country: "United Kingdom")
-    refute author.valid?, "Author should be invalid without a surname"
-    assert_includes author.errors[:surname], "can't be blank"
+  test "should be invalid without a surname" do
+    @author.surname = ""
+    assert_not @author.valid?
+    assert_includes @author.errors[:surname], "can't be blank"
   end
 
-  def test_author_is_invalid_without_country
-    author = Author.new(name: "J.R.R.", surname: "Tolkien")
-    refute author.valid?, "Author should be invalid without a country"
-    assert_includes author.errors[:country], "can't be blank"
+  test "should be invalid if surname format is incorrect" do
+    invalid_surnames = ["Doe123", "D@ne"]
+    invalid_surnames.each do |invalid_surname|
+      @author.surname = invalid_surname
+      assert_not @author.valid?, "#{invalid_surname} should be invalid"
+      assert_includes @author.errors[:surname], "must be valid surname format"
+    end
   end
 
-  def test_author_is_unique_by_name_and_surname  
-    duplicate_author = Author.new(name: "J.R.R.", surname: "Tolkien", country: "UK")
-    refute duplicate_author.valid?, "Author with same name and surname should be invalid"
+  test "should be invalid if surname is too short" do
+    @author.surname = "A"
+    assert_not @author.valid?, "Surname should be invalid if length is less thant 2 characters"
+    assert_includes @author.errors[:surname], "is too short (minimum is 2 characters)"
+  end
+
+  test "should be invalid if surname is too long" do
+    @author.surname = "ThisAuthorSurNameIsWayTooLongAndInvalidSoTestNoWayWillPass"
+    assert_not @author.valid?, "Surname should be invalid if length is more thant 50 characters"
+    assert_includes @author.errors[:surname], "is too long (maximum is 50 characters)"
+  end
+
+  test "should be invalid without a country" do
+    @author.country = nil
+    assert_not @author.valid?
+    assert_includes @author.errors[:country], "can't be blank"
+  end
+
+  test "should be invalid if country format is incorrect" do
+    invalid_countries = ["USA123", "C@nd@"]
+    invalid_countries.each do |invalid_country|
+      @author.country = invalid_country
+      assert_not @author.valid?, "#{invalid_country} should be invalid"
+      assert_includes @author.errors[:country], "must be a valid country format"
+    end
+  end
+
+  test "should be invalid if country is too short" do
+    @author.country = "A"
+    assert_not @author.valid?, "Country should be invalid if length is less thant 2 characters"
+    assert_includes @author.errors[:country], "is too short (minimum is 2 characters)"
+  end
+
+  test "should be invalid if country is too long" do
+    @author.country = "ThisAuthorCountryIsWayTooLongAndInvalidSoTestNoWayWillPass"
+    assert_not @author.valid?, "Country should be invalid if length is more thant 50 characters"
+    assert_includes @author.errors[:country], "is too long (maximum is 50 characters)"
+  end  
+
+  test "should be invalid with duplicate name and surname" do
+    duplicate_author = @author.dup
+    @author.save!
+    assert_not duplicate_author.valid?
     assert_includes duplicate_author.errors[:name], "has already been taken"
+  end
+  
+  test "should allow an author to have many books" do
+    @author.save!
+    book1 = @author.books.create!(title: "Book One", language: "Spanish")
+    book2 = @author.books.create!(title: "Book Two", language: "Spanish")
+
+    assert_equal 2, @author.books.count
+    assert_includes @author.books, book1
+    assert_includes @author.books, book2
   end  
 end
