@@ -2,7 +2,9 @@ require "test_helper"
 
 class UsersControllerTest < ActionDispatch::IntegrationTest
   setup do
-    @user = users(:one)
+    Mongoid.purge!
+    
+    @user = User.create!(name: "Username", email: "example@mail.com", password: "SecurePassword#123")
   end
 
   test "should get index" do
@@ -17,7 +19,7 @@ class UsersControllerTest < ActionDispatch::IntegrationTest
 
   test "should create user" do
     assert_difference("User.count") do
-      post users_url, params: { user: { email: @user.email, name: @user.name, password: @user.password } }
+      post users_url, params: { user: { email: "ransom@mail.com", name: "UserName", password: "SecurePassword#123" } }
     end
 
     assert_redirected_to user_url(User.last)
