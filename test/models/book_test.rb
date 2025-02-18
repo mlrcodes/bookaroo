@@ -104,6 +104,12 @@ class BookTest < ActiveSupport::TestCase
     assert_includes @book.errors[:score], "must be between 1 and 10 in 0.5 increments"
   end
 
+  test "should be invalid without an author" do
+    @book.author = nil
+    assert_not @book.valid?
+    assert_includes @book.errors[:author], "can't be blank"
+  end
+
   test "should allow books with same title and author but different languages" do
     @book.save!
     book2 = Book.new(
@@ -127,7 +133,7 @@ class BookTest < ActiveSupport::TestCase
       author: @author
     )
     assert_not duplicate_book.valid?
-    assert_includes duplicate_book.errors[:title], "has already been taken for this language"
+    assert_includes duplicate_book.errors[:title], "book already exists"
   end
 
   test "should allow books with same titles but different authors" do
