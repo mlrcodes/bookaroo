@@ -41,6 +41,7 @@ class BooksController < ApplicationController
     @book = Book.find_or_create_by(
       title: book_params[:title],
       language: book_params[:language],
+      image: book_params[:image],
       author: @author,
     )
 
