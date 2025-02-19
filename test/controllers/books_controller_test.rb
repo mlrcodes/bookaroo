@@ -2,7 +2,7 @@ require "test_helper"
 
 class BooksControllerTest < ActionDispatch::IntegrationTest
   setup do
-    Mongoid.purge!
+    Mongoid::Clients.default.database.drop
 
     @author = Author.create!(name: "Gabriel", surname: "García Márquez", country: "Colombia")
 
@@ -16,13 +16,11 @@ class BooksControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should get index" do
-    @book.save!
     get books_url
     assert_response :success
   end
 
   test "should get new" do
-    @book.save!
     get new_book_url
     assert_response :success
   end

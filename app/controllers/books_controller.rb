@@ -26,7 +26,6 @@ class BooksController < ApplicationController
 
     if missing_required_params?
       @book = Book.new(book_params)      
-      p @book
       flash[:error] = "All fields (title, language, and author details) are required."
       render :new, status: :unprocessable_entity 
       return
