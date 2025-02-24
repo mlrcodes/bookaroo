@@ -1,17 +1,14 @@
 <div id="<%= dom_id book %>">
-  <p>
-    <strong>Title:</strong>
-    <%= book.title %>
-  </p>
+  <h2><%= book.title %></h2>
+  <p><strong>Language:</strong> <%= book.language %></p>
+  <p><strong>Status:</strong> <%= book.status %></p>
+  <p><strong>Score:</strong> <%= book.score %></p>
 
-  <p>
-    <strong>Language:</strong>
-    <%= book.language %>
-  </p>
+  <% if book.image.present? %>
+    <p><strong>Cover:</strong> <%= book.image %></p>    
+  <% end %>
 
-  <p>
-    <strong>Image:</strong>
-    <%= book.image %>
-  </p>
-
+  <h3>Author Details</h3>
+  <p><strong>Name:</strong> <%= book.author.name %> <%= book.author.surname %></p>
+  <p><strong>Country:</strong> <%= book.author.country %></p>
 </div>

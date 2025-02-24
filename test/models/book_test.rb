@@ -113,10 +113,8 @@ class BookTest < ActiveSupport::TestCase
   test "should allow books with same title and author but different languages" do
     @book.save!
     book2 = Book.new(
-      title: "One Hundred Years of Solitude",
+      title: @book.title,
       language: "English",
-      status: "pending",
-      score: 9.5,
       author: @author
     )
 
@@ -126,10 +124,8 @@ class BookTest < ActiveSupport::TestCase
   test "should not allow books with same title, author, and language" do
     @book.save!
     duplicate_book = Book.new(
-      title: "One Hundred Years of Solitude",
-      language: "Spanish",
-      status: "pending",
-      score: 9.5,
+      title: @book.title,
+      language: @book.language,
       author: @author
     )
     assert_not duplicate_book.valid?
@@ -140,10 +136,8 @@ class BookTest < ActiveSupport::TestCase
     another_author = Author.create!(name: "Jorge", surname: "Luis Borges", country: "Argentina")
     @book.save!
     book2 = Book.new(
-      title: "One Hundred Years of Solitude",
-      language: "Spanish",
-      status: "pending",
-      score: 9.5,
+      title: @book.title,
+      language: @book.language,
       author: another_author
     )
     assert book2.valid?
@@ -153,10 +147,8 @@ class BookTest < ActiveSupport::TestCase
     @book.save!
     book2 = Book.new(
       title: "Different title",
-      language: "Spanish",
-      status: "pending",
-      score: 9.5,
-      author: @author
+      language: @book.language,
+      author: @book.author
     )    
     assert book2.valid?
   end

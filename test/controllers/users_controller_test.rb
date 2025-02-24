@@ -28,7 +28,7 @@ class UsersControllerTest < ActionDispatch::IntegrationTest
 
   test "should show user" do
     @user.save!
-    get user_url(@user)
+    get user_url @user
     assert_response :success
   end
 
