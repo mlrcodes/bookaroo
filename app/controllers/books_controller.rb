@@ -26,8 +26,8 @@ class BooksController < ApplicationController
     @user.books << @book
 
     if @user.save
-      p @book.errors
-      redirect_to user_path @user, notice: "Book was successfully created."
+      flash[:notice] = "Book was successfully created."
+      redirect_to user_path(@user)
     else
       render "/users/show", status: :unprocessable_entity
     end

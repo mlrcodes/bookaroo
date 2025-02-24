@@ -29,7 +29,7 @@ class BooksControllerTest < ActionDispatch::IntegrationTest
       }
     end
 
-    assert_redirected_to user_path @user    
+    assert_redirected_to user_path(@user)
   end
 
   test "should not create book without author attributes" do    
