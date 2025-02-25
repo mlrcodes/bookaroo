@@ -1,0 +1,13 @@
+<h2>Recorded Books</h2>
+
+<% if @user.books.any? %>
+  <ul>
+    <% @user.books.select(&:persisted?).each do |book| %>
+      <li>
+        <%= link_to book.title, user_book_path(@user, book) %> - <%= book.language %>
+      </li>
+    <% end %>
+  </ul>
+<% else %>
+  <p>No books recorded yet.</p>
+<% end %>

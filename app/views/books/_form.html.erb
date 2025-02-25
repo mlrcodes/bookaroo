@@ -1,10 +1,4 @@
-<% if flash[:error].present? %>
-  <div class="alert alert-danger" style="color: red; background-color: #ffeeee; padding: 10px; border: 1px solid red; margin-bottom: 15px;">
-    <%= flash[:error] %>
-  </div>
-<% end %>
-
-<%= form_with(model: book) do |form| %>
+<%= form_with(model: [@user, book]) do |form| %>
   <% if book.errors.any? %>
     <div style="color: red">
       <h2><%= pluralize(book.errors.count, "error") %> prohibited this book from being saved:</h2>
@@ -12,7 +6,16 @@
       <ul>
         <% book.errors.each do |error| %>
           <li><%= error.full_message %></li>
+
+          <% p error %>          
         <% end %>
+
+        <% if book.author && book.author.errors.any? %>
+          <% book.author.errors.full_messages.each do |error| %>
+            <li><%= error %></li>
+          <% end %>                   
+        <% end %>        
+        
       </ul>
     </div>
   <% end %>

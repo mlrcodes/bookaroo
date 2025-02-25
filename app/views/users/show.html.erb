@@ -8,3 +8,8 @@
 
   <%= button_to "Destroy this user", @user, method: :delete %>
 </div>
+
+<%= render "books/list" %>
+
+<% book = @book || @user.books.build %>
+<%= render "books/form", book: book, author: book.author || book.build_author %>
