@@ -25,7 +25,7 @@ class RegistrationsControllerTest < ActionDispatch::IntegrationTest
       post registration_url, params: @user_data
     end
 
-    assert_redirected_to user_path(User.last)
+    assert_redirected_to user_path User.last
   end
 
   test "should log in user after successful registration" do

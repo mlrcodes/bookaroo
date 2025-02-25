@@ -9,7 +9,8 @@ class RegistrationsController < ApplicationController
 
     if @user.save
       login @user
-      redirect_to user_path(@user), notice: "User was successfully created."
+      flash[:notice] = "User was successfully created."
+      redirect_to user_path @user 
     else
       render :new, status: :unprocessable_entity
     end

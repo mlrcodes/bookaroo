@@ -4,6 +4,7 @@ Rails.application.routes.draw do
   end
 
   resource :registration, only: [:new, :create]
+  resource :session, only: [:new, :create]
 
   root "main#index"
 end
