@@ -18,6 +18,11 @@
   </head>
 
   <body>
-    <%= yield %>
+      <div><%= notice %></div>
+      <div><%= alert %></div>
+
+      <%= link_to "Sign Up", new_registration_path %>
+
+      <%= yield %>    
   </body>
 </html>
