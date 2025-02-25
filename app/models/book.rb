@@ -38,17 +38,6 @@ class Book
 
   validates :author, presence: true
 
-  # Factory method: Creates a book with an existing author
-  def self.create_from_existing_author(title:, language:, status:, score:, image:, author:)
-    Book.create!(title: title, language: language, status: status, score: score, image: image, author: author)
-  end
-
-  # Factory method: Creates a book and a new author in one step
-  def self.create_with_author(title:, language:, status:, score:, image:, author_name:, author_surname:, author_country:)
-    author = Author.find_or_create_by!(name: author_name, surname: author_surname, country: author_country)
-    Book.create!(title: title, language: language, status: status, score: score, image: image, author: author)
-  end
-
   private
 
   def validate_multiple_of_half
