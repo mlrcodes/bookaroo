@@ -35,4 +35,9 @@ class User
       message: "must be a valid password format" 
     },
     if: -> { new_record? || password.present? } 
+
+  def self.authenticate(email:, password:) 
+    user = User.where(email: email).first
+    user&.authenticate(password)
+  end
 end
