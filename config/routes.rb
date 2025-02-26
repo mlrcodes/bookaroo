@@ -5,6 +5,7 @@ Rails.application.routes.draw do
 
   resource :registration, only: [:new, :create]
   resource :session, only: [:new, :create, :destroy]
+  resource :password, only: [:edit, :update]
 
   root "home#index"
 end
