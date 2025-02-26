@@ -7,8 +7,8 @@ class SessionsControllerTest < ActionDispatch::IntegrationTest
     @user = User.create!(
       name: "Test User",
       email: "test@example.com",
-      password: "MySecurePassword#123",
-      password_confirmation: "MySecurePassword#123"
+      password: PASSWORD_TEST,
+      password_confirmation: PASSWORD_TEST
     )
   end
 
@@ -18,7 +18,7 @@ class SessionsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should login with valid credentials" do
-    post session_url, params: { email: @user.email, password: "MySecurePassword#123" }
+    post session_url, params: { email: @user.email, password: PASSWORD_TEST }
     
     assert_redirected_to user_path @user
     assert_equal "You have signed in successfully.", flash[:notice]
@@ -31,5 +31,26 @@ class SessionsControllerTest < ActionDispatch::IntegrationTest
     assert_response :unprocessable_entity
     assert_equal "Invalid email or password.", flash[:alert]
     assert_nil session[:user_id], "User should not be logged in"
+  end
+
+  test "should log out user successfully" do
+    # Log in the user
+    post session_url, params: { email: @user.email, password: PASSWORD_TEST }
+    assert_redirected_to user_path @user
+    follow_redirect!
+    
+    assert_equal @user.id.to_s, session[:user_id], "User should be logged in"
+
+    # Log out the user
+    delete session_url
+    assert_redirected_to root_path
+    follow_redirect!
+
+    # Verify session is cleared
+    assert_nil session[:user_id], "Session should be cleared after logout"
+    assert_nil Current.user, "Current.user should be reset after logout"
+
+    # Verify logout message is displayed
+    assert_match "You have been logged out.", flash[:notice]
   end
 end
