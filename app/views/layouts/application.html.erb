@@ -21,8 +21,12 @@
       <div><%= notice %></div>
       <div><%= alert %></div>
 
-      <%= link_to "Sign Up", new_registration_path %>
-      <%= link_to "Log In", new_session_path %>      
+      <% if user_signed_in? %>
+        <%= button_to "Log Out", session_path, method: :delete %>
+      <% else %>
+        <%= link_to "Sign Up", new_registration_path %>
+        <%= link_to "Log In", new_session_path %>      
+      <% end %>
 
       <%= yield %>    
   </body>
