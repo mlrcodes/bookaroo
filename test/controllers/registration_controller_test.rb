@@ -9,8 +9,8 @@ class RegistrationsControllerTest < ActionDispatch::IntegrationTest
       user: {
         name: "UserName",
         email: "example@mail.com",
-        password: "MySecurePassword#123",
-        password_confirmation: "MySecurePassword#123"
+        password: PASSWORD_TEST,
+        password_confirmation: PASSWORD_TEST
       }
     }
   end

@@ -12,6 +12,9 @@ class BooksControllerTest < ActionDispatch::IntegrationTest
     )  
     @user.books <<  @book
     @user.save!
+
+    post session_url, params: { email: @user.email, password: PASSWORD_TEST }
+    follow_redirect!
   end
 
   test "should create book" do
