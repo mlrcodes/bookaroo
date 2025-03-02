@@ -16,11 +16,8 @@ class ApplicationController < ActionController::Base
   
   def authenticate_user!        
     if current_user.nil?
-      Rails.logger.debug "🚨 No user found. Redirecting to login page!"
       reset_session
       redirect_to new_session_path, alert: "You must be logged in."
-    else
-      Rails.logger.debug "✅ User authenticated: #{Current.user.email}"
     end
   end
 

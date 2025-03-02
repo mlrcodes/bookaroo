@@ -69,6 +69,12 @@ class UserTest < ActiveSupport::TestCase
     assert_includes @user.errors[:password], "can't be blank"
   end
 
+  test "should be invalid with a blank password" do
+    @user.password = nil
+    assert_not @user.valid?
+    assert_includes @user.errors[:password], "can't be blank"
+  end
+
   test "should be invalid with a short password" do
     @user.password = "A1!a"
     assert_not @user.valid?
@@ -152,4 +158,38 @@ class UserTest < ActiveSupport::TestCase
     assert_not @user.valid?
     assert_includes @user.errors[:books], "is invalid"
   end    
+
+  test "should generate password reset token" do
+    assert_nil @user.reset_password_token
+    assert_nil @user.reset_password_sent_at
+
+    @user.generate_password_reset_token!
+
+    assert_not_nil @user.reset_password_token
+    assert_not_nil @user.reset_password_sent_at
+    assert_operator @user.reset_password_sent_at, :<=, Time.current
+  end  
+
+  test "should return false if token is not expired" do
+    @user.generate_password_reset_token!
+    assert_not @user.password_reset_token_expired?, "Token should NOT be expired"
+  end
+
+  test "should return true if token is expired" do
+    @user.generate_password_reset_token!
+    @user.update!(reset_password_sent_at: 16.minutes.ago)
+
+    assert @user.password_reset_token_expired?, "Token should be expired"
+  end
+
+  test "should clear password reset token" do
+    @user.generate_password_reset_token!
+    assert_not_nil @user.reset_password_token
+    assert_not_nil @user.reset_password_sent_at
+
+    @user.clear_password_reset_token!
+
+    assert_nil @user.reset_password_token
+    assert_nil @user.reset_password_sent_at
+  end
 end
