@@ -4,8 +4,10 @@ class UsersControllerTest < ActionDispatch::IntegrationTest
   setup do
     Mongoid.purge!
     
-    @password = "MySecurePassword#123"
-    @user = User.new(name: "UserName", email: "example@mail.com", password: @password)
+    @user = User.create!(name: "UserName", email: "email@example.com", password: PASSWORD_TEST)
+
+    post session_url, params: { email: @user.email, password: PASSWORD_TEST }
+    follow_redirect!    
   end
 
   test "should get index" do
@@ -14,27 +16,21 @@ class UsersControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should show user" do
-    @user.save!
     get user_url @user
     assert_response :success
   end
 
   test "should get edit" do
-    @user.save!
     get edit_user_url(@user)
     assert_response :success
   end
 
   test "should update user" do
-    @user.save!
-
-    patch user_url(@user), params: { user: { email: @user.email, name: @user.name, password: @password } }
+    patch user_url(@user), params: { user: { email: @user.email, name: @user.name, password: PASSWORD_TEST } }
     assert_redirected_to user_url(@user)
   end
 
   test "should destroy user" do
-    @user.save!
-
     assert_difference("User.count", -1) do
       delete user_url(@user)
     end

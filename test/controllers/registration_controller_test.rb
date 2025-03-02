@@ -9,8 +9,8 @@ class RegistrationsControllerTest < ActionDispatch::IntegrationTest
       user: {
         name: "UserName",
         email: "example@mail.com",
-        password: "MySecurePassword#123",
-        password_confirmation: "MySecurePassword#123"
+        password: PASSWORD_TEST,
+        password_confirmation: PASSWORD_TEST
       }
     }
   end
@@ -35,14 +35,44 @@ class RegistrationsControllerTest < ActionDispatch::IntegrationTest
     assert_equal user.id, session[:user_id] 
   end
 
-  test "should not create user with invalid attributes" do
+  test "should not create user with invalid name" do
     assert_no_difference "User.count" do
       post registration_url, params: {
         user: {
-          name: "",
+          name: "1nv4l1d",
+          email: "example@mail.com",
+          password: PASSWORD_TEST,
+          password_confirmation: PASSWORD_TEST
+        }
+      }
+    end
+
+    assert_response :unprocessable_entity
+  end
+
+  test "should not create user with invalid email" do
+    assert_no_difference "User.count" do
+      post registration_url, params: {
+        user: {
+          name: "User Name",
           email: "invalidemail",
-          password: "pass",
-          password_confirmation: "different"
+          password: PASSWORD_TEST,
+          password_confirmation: PASSWORD_TEST
+        }
+      }
+    end
+
+    assert_response :unprocessable_entity
+  end
+
+  test "should not create user with blank password fields" do
+    assert_no_difference "User.count" do
+      post registration_url, params: {
+        user: {
+          name: "User Name",
+          email: "example@mail.com",
+          password: "",
+          password_confirmation: ""
         }
       }
     end
