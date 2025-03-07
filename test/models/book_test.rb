@@ -73,11 +73,6 @@ class BookTest < ActiveSupport::TestCase
     end
   end
 
-  test "should have a default score of 5" do
-    new_book = Book.create!(title: "Default Score Book", language: "English", status: "pending", author: @book.author)
-    assert_equal 5, new_book.score, "Default score should be 5"
-  end
-
   test "should be invalid if score is less than 1" do
     @book.score = 0
     assert_not @book.valid?

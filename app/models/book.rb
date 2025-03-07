@@ -5,7 +5,7 @@ class Book
   field :title, type: String
   field :language, type: String
   field :status, type: String, default: "pending"
-  field :score, type: Float, default: 5
+  field :score, type: Float
   field :image, type: String
 
   belongs_to :author, class_name: "Author", inverse_of: :books
