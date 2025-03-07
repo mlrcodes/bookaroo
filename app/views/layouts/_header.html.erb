@@ -1,0 +1,37 @@
+<header class="bg-white shadow">
+  <nav class="mx-auto max-w-7xl p-4 flex items-center justify-between lg:px-8">
+    <!-- Logo -->
+    <div class="flex flex-1">
+      <a href="<%= root_path %>" class="-m-1.5 p-1.5 flex items-center">
+        <img class="h-8 w-auto" src="https://tailwindcss.com/plus-assets/img/logos/mark.svg?color=indigo&shade=600" alt="Logo">
+        <span class="ml-2 text-lg font-semibold text-gray-900">Book Tracker</span>
+      </a>
+    </div>
+
+    <!-- Mobile Menu Button (Visible by default, hidden on large screens) -->
+    <button id="mobile-menu-button" class="lg:hidden -m-2 p-2 text-gray-700">
+      <span class="sr-only">Open menu</span>
+      <svg class="w-6 h-6" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+      </svg>
+    </button>
+
+    <!-- Navigation Menu (Mobile-First, Stacked) -->
+    <div id="mobile-menu" class="absolute top-16 left-0 w-full bg-white shadow-lg hidden lg:hidden">
+      <div class="flex flex-col items-center space-y-4 p-4">
+          <%= link_to "Home", root_path, class: "text-gray-900 text-sm font-semibold hover:text-indigo-600" %>
+          <%= link_to "New Book", new_book_path, class: "text-gray-900 text-sm font-semibold hover:text-indigo-600" %>
+          <%= link_to "Profile", profile_path, class: "text-gray-900 text-sm font-semibold hover:text-indigo-600" %>
+          <%= link_to "Logout", session_path, method: :delete, class: "text-red-600 text-sm font-semibold hover:text-red-400" %>
+      </div>
+    </div>
+
+    <!-- Desktop Menu -->
+    <div class="hidden lg:flex lg:gap-x-12">
+        <%= link_to "Home", root_path, class: "text-sm font-semibold text-gray-900 hover:text-indigo-600" %>
+        <%= link_to "New Book", new_book_path, class: "text-sm font-semibold text-gray-900 hover:text-indigo-600" %>
+        <%= link_to "Profile", profile_path, class: "text-sm font-semibold text-gray-900 hover:text-indigo-600" %>
+        <%= link_to "Logout", session_path, method: :delete, class: "text-sm font-semibold text-red-600 hover:text-red-400" %>
+    </div>
+  </nav>
+</header>
