@@ -10,7 +10,7 @@ class BookTest < ActiveSupport::TestCase
       title: "One Hundred Years of Solitude",
       language: "Spanish",
       status: "pending",
-      score: 9.5,
+      rating: 9.5,
       author: @author
     )
   end
@@ -73,30 +73,30 @@ class BookTest < ActiveSupport::TestCase
     end
   end
 
-  test "should be invalid if score is less than 1" do
-    @book.score = 0
+  test "should be invalid if rating is less than 1" do
+    @book.rating = 0
     assert_not @book.valid?
-    assert_includes @book.errors[:score], "must be between 1 and 10 in 0.5 increments"
+    assert_includes @book.errors[:rating], "must be between 1 and 10 in 0.5 increments"
   end
 
-  test "should be invalid if score is greater than 10" do
-    @book.score = 11
+  test "should be invalid if rating is greater than 10" do
+    @book.rating = 11
     assert_not @book.valid?
-    assert_includes @book.errors[:score], "must be between 1 and 10 in 0.5 increments"
+    assert_includes @book.errors[:rating], "must be between 1 and 10 in 0.5 increments"
   end
 
-  test "should be valid if score is a multiple of 0.5" do
-    valid_scores = [1.0, 1.5, 5.0, 9.5, 10.0]
-    valid_scores.each do |valid_score|
-      @book.score = valid_score
-      assert @book.valid?, "Score #{valid_score} should be valid"
+  test "should be valid if rating is a multiple of 0.5" do
+    valid_ratings = [1.0, 1.5, 5.0, 9.5, 10.0]
+    valid_ratings.each do |valid_rating|
+      @book.rating = valid_rating
+      assert @book.valid?, "Rating #{valid_rating} should be valid"
     end
   end
 
-  test "should be invalid if score is not a multiple of 0.5" do
-    @book.score = 7.3
+  test "should be invalid if rating is not a multiple of 0.5" do
+    @book.rating = 7.3
     assert_not @book.valid?
-    assert_includes @book.errors[:score], "must be between 1 and 10 in 0.5 increments"
+    assert_includes @book.errors[:rating], "must be between 1 and 10 in 0.5 increments"
   end
 
   test "should be invalid without an author" do

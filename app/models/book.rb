@@ -5,8 +5,8 @@ class Book
   field :title, type: String
   field :language, type: String
   field :status, type: String, default: "pending"
-  field :score, type: Float
-  field :image, type: String
+  field :rating, type: Float
+  field :cover_url, type: String
 
   belongs_to :author, class_name: "Author", inverse_of: :books
 
@@ -28,7 +28,7 @@ class Book
 
   validates :status, inclusion: { in: STATUSES }
 
-  validates :score, numericality: {
+  validates :rating, numericality: {
     greater_than_or_equal_to: 1,
     less_than_or_equal_to: 10,
     message: "must be between 1 and 10 in 0.5 increments"
@@ -41,8 +41,8 @@ class Book
   private
 
   def validate_multiple_of_half
-    if score.present? && (score * 2) % 1 != 0
-      errors.add(:score, "must be between 1 and 10 in 0.5 increments")
+    if rating.present? && (rating * 2) % 1 != 0
+      errors.add(:rating, "must be between 1 and 10 in 0.5 increments")
     end
   end
 end
