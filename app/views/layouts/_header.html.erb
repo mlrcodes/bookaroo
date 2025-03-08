@@ -22,7 +22,7 @@
           <%= link_to "Home", root_path, class: "text-gray-900 text-sm font-semibold hover:text-indigo-600" %>
           <%= link_to "New Book", new_book_path, class: "text-gray-900 text-sm font-semibold hover:text-indigo-600" %>
           <%= link_to "Profile", profile_path, class: "text-gray-900 text-sm font-semibold hover:text-indigo-600" %>
-          <%= link_to "Logout", session_path, method: :delete, class: "text-red-600 text-sm font-semibold hover:text-red-400" %>
+          <%= button_to "Logout", session_path, method: :delete, class: "text-red-600 text-sm font-semibold hover:text-red-400" %>
       </div>
     </div>
 
@@ -31,7 +31,7 @@
         <%= link_to "Home", root_path, class: "text-sm font-semibold text-gray-900 hover:text-indigo-600" %>
         <%= link_to "New Book", new_book_path, class: "text-sm font-semibold text-gray-900 hover:text-indigo-600" %>
         <%= link_to "Profile", profile_path, class: "text-sm font-semibold text-gray-900 hover:text-indigo-600" %>
-        <%= link_to "Logout", session_path, method: :delete, class: "text-sm font-semibold text-red-600 hover:text-red-400" %>
+        <%= button_to "Logout", session_path, method: :delete, class: "text-sm font-semibold text-red-600 hover:text-red-400" %>
     </div>
   </nav>
 </header>
